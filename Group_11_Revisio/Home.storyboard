@@ -10,36 +10,55 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Home Collection View Controller-->
+        <!--Home View Controller-->
         <scene sceneID="tYZ-Br-z2I">
             <objects>
-                <viewController id="4ZY-0A-Wo4" customClass="HomeCollectionViewController" customModule="Group_11_Revisio" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HomeViewController" id="4ZY-0A-Wo4" customClass="HomeViewController" customModule="Group_11_Revisio" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QFp-Kk-Ioy" customClass="UICollectionView">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iFj-fh-CTd">
-                                <rect key="frame" x="290" y="157" width="47" height="67"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" image="plus" catalog="system"/>
-                                <connections>
-                                    <action selector="plusButtonTapped:" destination="4ZY-0A-Wo4" eventType="touchUpInside" id="ya6-Gx-8vY"/>
-                                </connections>
-                            </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ufZ-rN-vt7">
+                                <rect key="frame" x="0.0" y="172" width="393" height="563"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PPl-pD-GRh">
+                                    <size key="itemSize" width="157" height="168"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="CtZ-CB-H94">
+                                        <rect key="frame" x="0.0" y="0.0" width="157" height="168"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="rXC-hn-LZv">
+                                            <rect key="frame" x="0.0" y="0.0" width="157" height="168"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="157" height="168"/>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yyJ-lR-hc6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="yyJ-lR-hc6" firstAttribute="bottom" secondItem="ufZ-rN-vt7" secondAttribute="bottom" id="0kO-ql-0XP"/>
+                            <constraint firstItem="ufZ-rN-vt7" firstAttribute="leading" secondItem="yyJ-lR-hc6" secondAttribute="leading" id="3pK-la-agw"/>
+                            <constraint firstItem="ufZ-rN-vt7" firstAttribute="top" secondItem="yyJ-lR-hc6" secondAttribute="top" id="66l-1f-FBK"/>
+                            <constraint firstItem="yyJ-lR-hc6" firstAttribute="trailing" secondItem="ufZ-rN-vt7" secondAttribute="trailing" id="CpB-f1-c4P"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="tKG-BV-Kfq"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="collectionView" destination="ufZ-rN-vt7" id="Da1-5d-QLO"/>
                         <segue destination="ry9-kf-REg" kind="show" identifier="showUploadContent" id="HBb-AX-3ca"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S36-4S-LDv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="720" y="-918"/>
+            <point key="canvasLocation" x="719.84732824427476" y="-918.30985915492965"/>
         </scene>
         <!--Upload Content-->
         <scene sceneID="na4-Op-mpZ">
