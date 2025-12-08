@@ -17,9 +17,8 @@ class MonthlyBadgeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var subtitleLabel: UILabel!
     
     @IBOutlet weak var allBadgesImageView: UIImageView!
-    
+
     @IBOutlet weak var showAllButton: UIButton!
-    
     override func awakeFromNib() {
             super.awakeFromNib()
             setupCardStyle()
@@ -37,7 +36,7 @@ class MonthlyBadgeCollectionViewCell: UICollectionViewCell {
             monthlyBadgeImageView.image = UIImage(named: badge.imageAssetName)
             
             // Ensure "Show All" is visible and formatted
-            showAllButton.setTitle("Show All", for: .normal)
+          showAllButton.setTitle("Show All", for: .normal)
             // Optionally, hide the button if the badge is locked
         }
 

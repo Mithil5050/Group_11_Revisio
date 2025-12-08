@@ -8,20 +8,13 @@
 import UIKit
 
 class ProgressViewContoller: UIViewController {
+    
+    
 
+ 
     @IBOutlet weak var hoursGraphView: UIView!
     var chart = BarGraphView()
-    
-    @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
-                  chart.values = [2, 4, 3, 6, 7, 5]
-              } else {
-                  chart.values = [4, 7, 6, 10, 5, 9]
-              }
-          }
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -40,13 +33,18 @@ class ProgressViewContoller: UIViewController {
                chart.bottomAnchor.constraint(equalTo: hoursGraphView.bottomAnchor, constant: -12)
            ])
        }
+
+    @IBAction func segmentChanged(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            chart.values = [2, 4, 3, 6, 7, 5, 6]
+        } else {
+                   chart.values = [4, 7, 6, 10, 5, 9, 8]
+               }
+           }
     
-    @IBAction func awardsButtonTapped(_ sender: UIButton) {
-        performSegue(withIdentifier: "ShowAwardsPage", sender: nil)
     }
     
 //       This actually places the chart inside the container.
-    }
     
 
     /*
