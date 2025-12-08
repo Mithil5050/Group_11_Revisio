@@ -19,78 +19,65 @@ class AwardsViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet weak var collectionView: UICollectionView!
     
     // Placeholder data array (replace with your actual ViewModel/data source)
-        var badges: [Badge] = [
-                Badge(title: "Monthly Challenge", detail: "Upcoming Badge: Pace Setter", isLocked: false, imageAssetName: "monthly_challenge"),
-                Badge(title: "Squad MVP", detail: "Earned: 13/09/2025", isLocked: false, imageAssetName: "squad_mvp"),
-                Badge(title: "Flash Genius", detail: "Earned: 18/09/2025", isLocked: false, imageAssetName: "flash_genius"),
-                Badge(title: "Monthly Hustler", detail: "Earned: 1/10/2025", isLocked: false, imageAssetName: "monthly_hustler"),
-                Badge(title: "Plan Perfected", detail: "Earned: 17/10/2025", isLocked: false, imageAssetName: "plan_perfected"),
-                Badge(title: "Quiz Master", detail: "Unlock the badge", isLocked: true, imageAssetName: "quiz_master_lock"),
-                Badge(title: "Streak Master", detail: "Unlock the badge", isLocked: true, imageAssetName: "streak_master_lock"),
-            ]
+    var badges: [Badge] = [
+            // ... (Your badges array) ...
+        Badge(title: "Monthly Challenge", detail: "Upcoming Badge: Pace Setter", isLocked: false, imageAssetName: ""),
+                
+                // Indices 1 to N: Standard Grid Badges (Total 6 more)
+                Badge(title: "Squad MVP", detail: "Earned: 13/09/2025", isLocked: false, imageAssetName: "badge1_squad_mvp_"),
+                Badge(title: "Flash Genius", detail: "Earned: 18/09/2025", isLocked: false, imageAssetName: "badge2_flash_genuis"),
+                Badge(title: "Monthly Hustler", detail: "Earned: 1/10/2025", isLocked: false, imageAssetName: "badge3_monthly_hustler"),
+                Badge(title: "Plan Perfected", detail: "Earned: 17/10/2025", isLocked: false, imageAssetName: "badge4_plan_perfected"),
+                Badge(title: "Quiz Master", detail: "Unlock the badge", isLocked: true, imageAssetName: "badge5_quiz_master_lock"),
+                Badge(title: "Streak Master", detail: "Unlock the badge", isLocked: true, imageAssetName: "badge6_streak_master_lock"),
+        ]
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
             
-    override func viewDidLoad() {
-                super.viewDidLoad()
-                
-                // --- Essential Setup ---
-                collectionView.dataSource = self
-                collectionView.delegate = self
-                
-                if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                    layout.minimumInteritemSpacing = 16
-                    layout.minimumLineSpacing = 20
-                    layout.sectionInset = UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
-                }
-                
-                navigationItem.title = "Achievements"
+            // --- Essential Setup ---
+            collectionView.dataSource = self
+            collectionView.delegate = self
+            
+            if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.minimumInteritemSpacing = 16
+                layout.minimumLineSpacing = 20
+                layout.sectionInset = UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
             }
+            
+            navigationItem.title = "Achievements"
+        }
+        
+        // MARK: - UICollectionViewDataSource (Still inside the class)
+        
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return badges.count
         }
 
-        // MARK: - 2. UICollectionViewDataSource & Delegate (OUTSIDE the class)
-
-        extension AwardsViewController {
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
-            // UICollectionViewDataSource: Number of items
-            func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-                return badges.count
-            }
-
-            // UICollectionViewDataSource: Cell for item
-            func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-                
-                let badge = badges[indexPath.item]
+            let badge = badges[indexPath.item]
                 
                 if indexPath.item == 0 {
-                    // Feature Cell (Using the provided name change)
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthlyBadgeCell", for: indexPath) as? MonthlyBadgeCollectionViewCell else {
-                        // If you used "FeatureCell" and "FeatureBadgeCollectionViewCell" before, change the names here too.
-                        fatalError("Failed to dequeue MonthlyBadgeCell")
-                    }
-                    // cell.configure(with: badge)
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthlyBadgeCell", for: indexPath) as? MonthlyBadgeCollectionViewCell else { fatalError() }
+                    cell.configure(with: badge) // <-- UNCOMMENTED
                     return cell
                     
                 } else {
-                    // Standard Cell
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BadgeCell", for: indexPath) as? BadgeCollectionViewCell else {
-                        fatalError("Failed to dequeue BadgeCell")
-                    }
-                    // cell.configure(with: badge)
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BadgeCell", for: indexPath) as? BadgeCollectionViewCell else { fatalError() }
+                    cell.configure(with: badge) // <-- UNCOMMENTED
                     return cell
                 }
-            }
             
-            // UICollectionViewDelegate: Did Select Item (Optional, for handling taps)
-            func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-                // Handle cell selection/tap here
-            }
         }
+        // The class ends here, before the extensions start
+    }
 
-        // MARK: - 3. UICollectionViewDelegateFlowLayout (Sizing Logic)
+    // MARK: - 3. UICollectionViewDelegateFlowLayout (Sizing Logic)
 
-        // NOTE: This extension MUST be separate to handle the sizing protocol.
-        extension AwardsViewController: UICollectionViewDelegateFlowLayout {
-            
-            func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    extension AwardsViewController: UICollectionViewDelegateFlowLayout {
+        // ... (Your sizeForItemAt function goes here, exactly as you provided) ...
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
                 
                 guard let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
                 
@@ -103,23 +90,23 @@ class AwardsViewController: UIViewController, UICollectionViewDataSource, UIColl
                 // --- Sizing Logic ---
                 
                 if indexPath.item == 0 {
-                    // Feature Cell (Full Width)
-                    // Width is total bounds width minus section insets (20 left + 20 right)
+                    // A. Feature Cell (Index 0): Full Width (130 points tall)
                     let width = collectionView.bounds.width - sectionInsets.left - sectionInsets.right
                     let height: CGFloat = 130.0
                     return CGSize(width: width, height: height)
                     
                 } else {
-                    // Standard Cells (Two Columns)
+                    // B. Standard Cells (Index 1+): Two Columns
                     let numberOfColumns: CGFloat = 2
                     let totalSpacing = interItemSpacing * (numberOfColumns - 1)
                     
                     let availableWidth = collectionView.bounds.width - totalHorizontalPadding - totalSpacing
                     
                     let cellWidth = floor(availableWidth / numberOfColumns)
-                    let cellHeight = cellWidth * 1.3
+                    let cellHeight = cellWidth * 1.3 // Taller rectangle shape
                     
                     return CGSize(width: cellWidth, height: cellHeight)
                 }
             }
         }
+    
