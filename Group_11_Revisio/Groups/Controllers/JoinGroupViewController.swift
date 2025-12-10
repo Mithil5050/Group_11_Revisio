@@ -10,12 +10,34 @@ import UIKit
 class JoinGroupViewController: UIViewController {
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Do any additional setup after loading the view.
-    }
-    
-    @IBAction func closeButtonTapped(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
+            super.viewDidLoad()
+
+            // If this VC was pushed onto a navigation stack (not root), do nothing:
+            // the system will show the Back button automatically.
+            if let nav = navigationController, nav.viewControllers.count > 1 {
+                // Remove any leftBarButtonItem created in storyboard (avoid duplicates)
+                navigationItem.leftBarButtonItem = nil
+            } else {
+                // Presented modally: show a Close (X) button on the left.
+                // If you already added a storyboard Bar Button and wired it to closeButtonTapped,
+                // you can skip creating it programmatically. But to avoid duplicates we create here.
+                if navigationItem.leftBarButtonItem == nil {
+                    let close = UIBarButtonItem(barButtonSystemItem: .close,
+                                                target: self,
+                                                action: #selector(closeButtonTapped(_:)))
+                    navigationItem.leftBarButtonItem = close
+                }
+            }
+        }
+
+        // MARK: - Close / Back handling
+        @objc func closeButtonTapped(_ sender: UIBarButtonItem) {
+            // If inside a navigation controller and not the root -> pop
+            if let nav = navigationController, nav.viewControllers.count > 1 {
+                nav.popViewController(animated: true)
+                return
+            }
+            // Otherwise dismiss modally
+            dismiss(animated: true, completion: nil)
+        }
 }

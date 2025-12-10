@@ -1,0 +1,47 @@
+//
+//  MessageCell.swift
+//  Group_11_Revisio
+//
+//  Created by Chirag Poojari on 10/12/25.
+//
+
+import UIKit
+
+class MessageCell: UITableViewCell {
+
+    @IBOutlet weak var bubbleView: UIView!
+    @IBOutlet weak var messageLabel: UILabel!
+
+    // These are created by adding the two constraints in storyboard and connecting them
+    @IBOutlet weak var bubbleLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bubbleTrailingConstraint: NSLayoutConstraint!
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        messageLabel.numberOfLines = 0
+        bubbleView.layer.cornerRadius = 16
+        bubbleView.clipsToBounds = true
+        
+        // default styling
+        bubbleView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        messageLabel.textColor = .black
+    }
+
+    func configure(with message: Message) {
+        messageLabel.text = message.text
+        if message.isOutgoing {
+            // align to right
+            bubbleLeadingConstraint.isActive = false
+            bubbleTrailingConstraint.isActive = true
+            bubbleView.backgroundColor = UIColor(red: 0.0/255, green: 122/255, blue: 255/255, alpha: 1) // iMessage blue
+            messageLabel.textColor = .white
+        } else {
+            // align to left
+            bubbleLeadingConstraint.isActive = true
+            bubbleTrailingConstraint.isActive = false
+            bubbleView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+            messageLabel.textColor = .black
+        }
+    }
+
+}
