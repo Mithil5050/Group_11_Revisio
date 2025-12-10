@@ -22,6 +22,7 @@ class GroupCodeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateLabels()
+        setCustomBackAsClose()
     }
 
     // MARK: - Public configure function
@@ -43,6 +44,11 @@ class GroupCodeViewController: UIViewController {
             shareButton.layer.cornerRadius = shareButton.bounds.height / 2
             shareButton.clipsToBounds = true
         }
+    
+    private func setCustomBackAsClose() {
+        let closeItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWholeFlow))
+        navigationItem.leftBarButtonItem = closeItem
+    }
 
         // MARK: - Update UI text
         private func updateLabels() {
@@ -54,14 +60,45 @@ class GroupCodeViewController: UIViewController {
 
     // MARK: - Button Actions
     @IBAction func copyButtonTapped(_ sender: UIButton) {
-        UIPasteboard.general.string = inviteCode
+        guard !inviteCode.isEmpty else { return }
 
-                // Temporary visual feedback
-                let original = sender.title(for: .normal)
-                sender.setTitle("Copied!", for: .normal)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                    sender.setTitle(original, for: .normal)
-                }
+            // Copy to clipboard
+            UIPasteboard.general.string = inviteCode
+
+            // Save original image (or use a sensible fallback)
+            let fallback = UIImage(systemName: "doc.on.doc")?.withRenderingMode(.alwaysTemplate)
+            let originalImage = sender.image(for: .normal) ?? fallback
+
+            // Success image
+            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
+            // Make sure tint is applied
+            sender.tintColor = .white
+            sender.imageView?.contentMode = .scaleAspectFit
+
+            // Animate to checkmark
+            DispatchQueue.main.async {
+                UIView.transition(with: sender,
+                                  duration: 0.18,
+                                  options: .transitionCrossDissolve,
+                                  animations: {
+                                      sender.setImage(checkmarkImage, for: .normal)
+                                      // optional: change background briefly for stronger feedback
+                                      // sender.backgroundColor = UIColor.systemGreen
+                                  }, completion: { _ in
+                                      // Revert after delay
+                                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                          UIView.transition(with: sender,
+                                                            duration: 0.18,
+                                                            options: .transitionCrossDissolve,
+                                                            animations: {
+                                                                sender.setImage(originalImage, for: .normal)
+                                                                // revert background if you changed it
+                                                                // sender.backgroundColor = yourOriginalColor
+                                                            }, completion: nil)
+                                      }
+                                  })
+            }
     }
 
     @IBAction func shareButtonTapped(_ sender: UIButton) {
@@ -73,8 +110,9 @@ class GroupCodeViewController: UIViewController {
 
                 present(ac, animated: true)
     }
-
-    @IBAction func closeButtonTapped(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+    
+    @objc private func closeWholeFlow() {
+        // This dismisses the entire modal navigation controller
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
