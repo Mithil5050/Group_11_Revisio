@@ -1,3 +1,10 @@
+//
+//  HomeViewController.swift
+//  Group_11_Revisio
+//
+//  Created by Mithil on 10/12/25.
+//
+
 import UIKit
 
 // Place these structures at the very top of HomeViewController.swift
@@ -29,6 +36,9 @@ let continueLearningCellID = "ContinueLearningCellID"
 let quickGamesCellID = "QuickGamesCellID"
 let studyPlanCellID = "StudyPlanCellID"
 let headerID = "HeaderID"
+
+// **ADD CONSTANT FOR SEGUE IDENTIFIER**
+let showStudyPlanSegueID = "ShowStudyPlanSegue"
 
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -181,7 +191,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         case .studyPlan: return studyPlanData.count
         case .uploadContent: return 1 // Single cell containing the table view
         case .continueLearning: return learningItems.count
-        case .quickGames: return 1 // 💡 FIX: Returns 1 cell to hold both game cards
+        case .quickGames: return 1 // FIX: Returns 1 cell to hold both game cards
         }
     }
     
@@ -223,7 +233,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             let item1 = gameItems[0] // Word Scramble
             let item2 = gameItems[1] // Connections
             
-            // 💡 FIX: Configure the single cell with BOTH data items
+            // FIX: Configure the single cell with BOTH data items
             // This relies on QuickGamesCollectionViewCell having the configure(with:and:) method.
             cell.configure(with: item1, and: item2)
             
@@ -277,7 +287,9 @@ extension HomeViewController {
             print("Hero Card Tapped: Navigate to Profile/Tasks.")
         
         case .studyPlan:
-            print("Study Plan Card Tapped: Navigate to the full Study Plan interface.")
+            print("Study Plan Card Tapped: Navigating to the full Study Plan interface.")
+            // **PERFORM THE SEGUE**
+            performSegue(withIdentifier: showStudyPlanSegueID, sender: nil)
             
         case .quickGames:
             // Note: This tap will register for the entire container cell. You may need
