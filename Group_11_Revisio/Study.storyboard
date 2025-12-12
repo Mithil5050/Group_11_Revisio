@@ -428,11 +428,60 @@
                         <outletCollection property="answerButtons" destination="ujr-SR-Vg7" collectionClass="NSMutableArray" id="dyq-kN-bLP"/>
                         <outletCollection property="answerButtons" destination="f0n-zZ-Jwh" collectionClass="NSMutableArray" id="atu-vW-w6E"/>
                         <outletCollection property="answerButtons" destination="u4y-dN-NOH" collectionClass="NSMutableArray" id="bnC-ow-PLJ"/>
+                        <segue destination="PpP-4F-hjL" kind="show" identifier="ShowQuizResults" id="QYE-g8-kaQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S1O-sf-dXL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5632.8244274809158" y="164.78873239436621"/>
+        </scene>
+        <!--Score-->
+        <scene sceneID="THm-Ef-VFi">
+            <objects>
+                <viewController id="PpP-4F-hjL" customClass="ResultsViewController" customModule="Group_11_Revisio" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SyY-Gw-YG4">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quiz Results" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1b-V6-zzn">
+                                <rect key="frame" x="20" y="192" width="140" height="29"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lof-6m-Cj1">
+                                <rect key="frame" x="121.66666666666669" y="241" width="150" height="150"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9/10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bL3-aI-GJV">
+                                        <rect key="frame" x="52.333333333333329" y="62" width="45" height="26"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="58o-Dt-zwb"/>
+                                    <constraint firstItem="bL3-aI-GJV" firstAttribute="centerX" secondItem="Lof-6m-Cj1" secondAttribute="centerX" id="TXC-Ax-aj9"/>
+                                    <constraint firstAttribute="height" constant="150" id="gtd-Hj-cyK"/>
+                                    <constraint firstItem="bL3-aI-GJV" firstAttribute="centerY" secondItem="Lof-6m-Cj1" secondAttribute="centerY" id="hOt-mo-Vev"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="VJz-xJ-JNL"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="f1b-V6-zzn" firstAttribute="leading" secondItem="VJz-xJ-JNL" secondAttribute="leading" constant="20" id="2YG-hr-fWT"/>
+                            <constraint firstItem="Lof-6m-Cj1" firstAttribute="top" secondItem="f1b-V6-zzn" secondAttribute="bottom" constant="20" id="7tY-dh-5yH"/>
+                            <constraint firstItem="Lof-6m-Cj1" firstAttribute="centerX" secondItem="SyY-Gw-YG4" secondAttribute="centerX" id="PxT-E0-KtO"/>
+                            <constraint firstItem="f1b-V6-zzn" firstAttribute="top" secondItem="VJz-xJ-JNL" secondAttribute="top" constant="20" id="VeE-8u-h2i"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Score" id="nKU-Wx-Zge"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yyX-Wa-SHw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6487.7862595419847" y="164.78873239436621"/>
         </scene>
         <!--Material Detail View Controller-->
         <scene sceneID="YIl-ul-29e">
