@@ -8,22 +8,19 @@
 import UIKit
 
 class MemberCell: UICollectionViewCell {
-    @IBOutlet weak var nameLabel: UILabel?
+    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        // Make avatar circular
+        avatarImageView.layer.cornerRadius = avatarImageView.bounds.width / 2
+        avatarImageView.clipsToBounds = true
     }
 
     func configure(name: String) {
-        if let lbl = nameLabel { lbl.text = name }
-        else {
-            for v in contentView.subviews { v.removeFromSuperview() }
-            let lbl = UILabel(frame: contentView.bounds)
-            lbl.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            lbl.textAlignment = .center
-            lbl.font = UIFont.systemFont(ofSize: 12)
-            lbl.text = name
-            contentView.addSubview(lbl)
-        }
+        nameLabel.text = name
     }
 }
