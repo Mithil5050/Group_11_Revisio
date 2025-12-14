@@ -9,9 +9,15 @@ import UIKit
 
 class UserInfoCellTableViewCell: UITableViewCell {
 
+    @IBOutlet var pfp: UIImageView!
+    @IBOutlet var Edit: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        Edit.layer.cornerRadius = 27
+        Edit.backgroundColor = UIColor(hex: "F7F7F7")
+        pfp.layer.cornerRadius = pfp.frame.size.width / 2
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -1,8 +1,8 @@
 //
-//  DateButtonCell.swift
-//  Group_11_Revisio
+// DateButtonCell.swift
+// Group_11_Revisio
 //
-//  Created by Mithil on 10/12/25.
+// Created by Mithil on 10/12/25.
 //
 
 import UIKit
@@ -11,37 +11,39 @@ import UIKit
 class DateButtonCell: UICollectionViewCell {
     
     @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel! // Example: "Fri" and the date number
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var containerView: UIView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        // 🍏 iOS 26 Aesthetic: Rounded capsule look
-        containerView.layer.cornerRadius = 28 // Half of 60pt cell height for capsule shape
+        // 🍏 iOS Aesthetic: Rounded capsule look
+        // Assumes a cell height of 56 points for a perfect capsule shape (28 * 2)
+        containerView.layer.cornerRadius = 28
         containerView.clipsToBounds = true
         
-        // 🍏 iOS 26 Aesthetic: Ultra Thin Material/Liquid Glass effect (simulated)
-        // In a real app, this would involve setting a custom background effect view.
-        containerView.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor(white: 0.15, alpha: 0.8) : UIColor(white: 0.95, alpha: 0.8)
-        }
+        // Initial setup for the unselected color is now managed in configure()
+        // The conflicting dynamic color block has been removed.
     }
     
-    // Function to visually select the cell (e.g., 'Tue' in the screenshot)
+    // Function to visually select/unselect the cell
     func configure(day: String, dateNumber: String, isSelected: Bool) {
         dayLabel.text = day
-        dateLabel.text = dateNumber // <-- Use the date number here
+        dateLabel.text = dateNumber
 
         if isSelected {
-            containerView.backgroundColor = .systemBlue
+            // Selected state: iOS standard accent color with white text
+            containerView.backgroundColor = UIColor(hex: "91C1EF")
+            dayLabel.textColor = .systemBlue
+            dateLabel.textColor = .systemBlue
+        } else {
+            // Unselected state: Uses the requested static hex color
+            // This color will not change in Dark Mode.
+            containerView.backgroundColor = UIColor(hex: "91C1EF")
+            
+            // Text colors set to adapt to system dark/light mode
             dayLabel.textColor = .white
             dateLabel.textColor = .white
-        } else {
-            // Set unselected appearance
-            containerView.backgroundColor = .systemGray5
-            dayLabel.textColor = .label
-            dateLabel.textColor = .label
         }
     }
 }

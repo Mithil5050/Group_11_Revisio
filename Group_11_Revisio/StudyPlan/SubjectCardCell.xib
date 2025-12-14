@@ -38,7 +38,7 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="QIr-l1-a28" secondAttribute="trailing" id="7ke-nL-eNc"/>
                             <constraint firstAttribute="width" constant="118" id="Npi-VD-3jb"/>
@@ -63,6 +63,7 @@
             <connections>
                 <outlet property="nextTaskLabel" destination="QIr-l1-a28" id="1sq-JP-KaE"/>
                 <outlet property="progressContainerView" destination="A0f-yt-CvL" id="pCL-AY-mAQ"/>
+                <outlet property="subjectCard" destination="bia-s7-AFa" id="uyQ-hD-1yl"/>
                 <outlet property="subjectLabel" destination="y2h-5L-XmV" id="hNp-KV-rtT"/>
             </connections>
             <point key="canvasLocation" x="349.61832061068702" y="143.66197183098592"/>

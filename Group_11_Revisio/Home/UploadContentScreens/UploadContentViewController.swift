@@ -225,7 +225,7 @@ class UploadContentViewController: UIViewController,
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowUploadedContent" {
             if let destinationVC = segue.destination as? UploadConfirmationViewController {
-                destinationVC.uploadedMaterials = self.selectedContent
+                destinationVC.uploadedMaterials = self.selectedContent 
             }
         }
     }
