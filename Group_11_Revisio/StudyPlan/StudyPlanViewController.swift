@@ -1,8 +1,8 @@
 //
-//  StudyPlanViewController.swift
-//  Group_11_Revisio
+// StudyPlanViewController.swift
+// Group_11_Revisio
 //
-//  Created by Mithil on 10/12/25.
+// Created by Mithil on 10/12/25.
 //
 
 import UIKit
@@ -11,31 +11,39 @@ class StudyPlanViewController: UIViewController {
 
     // MARK: - IBOutlets
 
-    // 1. The main vertical scroll view (created in Storyboard/XIB)
     @IBOutlet weak var mainScrollView: UIScrollView!
-    
-    // 2. Collection View for Date Buttons (Calendar)
     @IBOutlet weak var dateCollectionView: UICollectionView!
-    
-    // 3. Collection View for Subject Cards
     @IBOutlet weak var subjectCollectionView: UICollectionView!
-    
-    // 4. Table View for the vertical list of Tasks (needs constraints disabled for scrolling)
     @IBOutlet weak var taskTableView: UITableView!
-    
-    // 5. CRUCIAL: Height constraint for the taskTableView to prevent vertical scrolling conflict
-    // You MUST create this constraint in Storyboard and connect it here.
     @IBOutlet weak var taskTableViewHeightConstraint: NSLayoutConstraint!
     
-    // MARK: - Data Source Example
+    // MARK: - Data Source
     
-    let days: [String] = ["Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"]
+    // ⬇️ MODIFIED: Holds the actual Date objects for the next 10 days ⬇️
+    var dateData: [Date] = []
     
+    // Tracks the currently selected date index (e.g., today is index 0)
+    var selectedDateIndex: Int = 0
+    
+    // MARK: - Date Formatters (Heavyweight objects, created once)
+    private let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE" // Fri, Sat, Sun
+        return formatter
+    }()
+    
+    private let dateNumberFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d" // Date number only (10, 11, 12)
+        return formatter
+    }()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // setupUI() // Uncomment this when you want to set navigation bar items
+        generateDateData() // ⬇️ NEW: Calculate the dates
+        // setupUI()
         setupCollectionViews()
         setupTableView()
     }
@@ -43,22 +51,30 @@ class StudyPlanViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        // CRUCIAL FIX: Force layout pass and then update the height constraint.
-        // This ensures the mainScrollView can determine the content size accurately.
+        // CRUCIAL FIX: Ensures the mainScrollView can determine the content size accurately.
         taskTableView.layoutIfNeeded()
         taskTableViewHeightConstraint.constant = taskTableView.contentSize.height
+        
+        // Disable table view scrolling when embedded in a scroll view
+        taskTableView.isScrollEnabled = true
     }
 
     // MARK: - Setup
-//
-//     private func setupUI() {
-//         // Set the Navigation Bar style (e.g., small title)
-//         title = "Study Plan"
-//
-//         // Add left and right bar button items
-//         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backTapped))
-//         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addTapped))
-//     }
+
+    // ⬇️ NEW: Function to generate 10 consecutive Date objects ⬇️
+    private func generateDateData() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Generate the current day + the next 9 days (10 total)
+        for i in 0..<10 {
+            if let date = calendar.date(byAdding: .day, value: i, to: today) {
+                dateData.append(date)
+            }
+        }
+        // Set 'Today' (index 0) as selected by default
+        selectedDateIndex = 0
+    }
     
     private func setupCollectionViews() {
         // Date Collection View
@@ -78,22 +94,12 @@ class StudyPlanViewController: UIViewController {
     private func setupTableView() {
         taskTableView.dataSource = self
         taskTableView.delegate = self
-        // **CRITICAL FIX: Table View Scrolling MUST be disabled when embedded.**
+        // CRITICAL FIX: Ensure scrolling is disabled when embedded in a Scroll View
         taskTableView.isScrollEnabled = true
         // Register the XIB for the task list cell
         let taskCellNib = UINib(nibName: "TaskCell", bundle: nil)
         taskTableView.register(taskCellNib, forCellReuseIdentifier: "TaskCell")
-        taskTableView.separatorStyle = .none // The design suggests no default separators
-    }
-    
-    // MARK: - Actions
-    
-    @objc func backTapped() {
-        // Handle back action
-    }
-    
-    @objc func addTapped() {
-        // Handle add/plus action
+        taskTableView.separatorStyle = .none
     }
 }
 
@@ -102,7 +108,7 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == dateCollectionView {
-            return days.count
+            return dateData.count // ⬇️ Use the dynamic date count
         } else if collectionView == subjectCollectionView {
             // Assuming 5 subjects for the initial view
             return 5
@@ -116,16 +122,16 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
                 return UICollectionViewCell()
             }
             
-            // --- Dynamic Date Configuration ---
-            let dayAbbreviation = days[indexPath.row]
-            // Calculate an arbitrary date number based on index (For visual display only)
-            let dateNumber = "\(indexPath.row + 10)"
+            let date = dateData[indexPath.row]
             
-            // Example: Set the 5th day (Tue) as selected to match the design.
-            let isSelected = (indexPath.row == 4)
+            // ⬇️ MODIFIED: Use Date Formatters ⬇️
+            let dayAbbreviation = dayFormatter.string(from: date)
+            let dateNumber = dateNumberFormatter.string(from: date)
+            
+            // Check against the dynamically tracked selection index
+            let isSelected = (indexPath.row == selectedDateIndex)
             
             cell.configure(day: dayAbbreviation, dateNumber: dateNumber, isSelected: isSelected)
-            // --- End Configuration ---
             
             return cell
             
@@ -134,26 +140,29 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
                 return UICollectionViewCell()
             }
             // Example: Configure Subject Cards Dynamically
-            if indexPath.row == 0 {
-                cell.subjectLabel.text = "Calculus"
-            } else if indexPath.row == 1 {
-                cell.subjectLabel.text = "Big Data"
-            } else if indexPath.row == 2 {
-                cell.subjectLabel.text = "MMA"
-            } else if indexPath.row == 3 {
-                cell.subjectLabel.text = "OS"
-            } else if indexPath.row == 4 {
-                cell.subjectLabel.text = "Chemistry"
-            } else if indexPath.row == 5 {
-                cell.subjectLabel.text = "Peace"
-            } else {
-                 cell.subjectLabel.text = "Subject \(indexPath.row)"
+            switch indexPath.row {
+            case 0: cell.subjectLabel.text = "Calculus"
+            case 1: cell.subjectLabel.text = "Big Data"
+            case 2: cell.subjectLabel.text = "MMA"
+            case 3: cell.subjectLabel.text = "OS"
+            case 4: cell.subjectLabel.text = "Chemistry"
+            default: cell.subjectLabel.text = "Subject \(indexPath.row)"
             }
             
             return cell
         }
         
         return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == dateCollectionView {
+            // Update selection index and reload to show the change
+            selectedDateIndex = indexPath.row
+            collectionView.reloadData()
+            
+            // TODO: Reload the taskTableView based on the newly selected date
+        }
     }
     
     // UICollectionViewDelegateFlowLayout for size customization
@@ -164,7 +173,7 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
         } else if collectionView == subjectCollectionView {
             // Cards fill most of the screen, leaving a peek of the next one
             let collectionViewWidth = collectionView.bounds.width
-            let desiredWidth = collectionViewWidth * 0.85 // e.g., 85% of screen width
+            let desiredWidth = collectionViewWidth * 0.85
             return CGSize(width: desiredWidth, height: collectionView.bounds.height)
         }
         return .zero
@@ -172,9 +181,9 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if collectionView == dateCollectionView {
-            return 8.0 // Small gap between date buttons
+            return 8.0
         } else if collectionView == subjectCollectionView {
-            return 12.0 // Gap between subject cards
+            return 12.0
         }
         return 0.0
     }
@@ -183,14 +192,13 @@ extension StudyPlanViewController: UICollectionViewDataSource, UICollectionViewD
 // MARK: - UITableViewDataSource
 extension StudyPlanViewController: UITableViewDataSource {
     
-    // MODIFIED: Returns 4 sections for Day 1 through Day 4
+    // MODIFIED: Returns 4 sections for Day 1 through Day 4 (Example Tasks)
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4 // Day 1, Day 2, Day 3, and Day 4
+        return 4
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Consistent number of tasks per day
-        return 2
+        return 2 // Consistent number of tasks per day
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -198,7 +206,7 @@ extension StudyPlanViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        // Configuration for Task Cells
+        // Configuration for Task Cells (Example data)
         switch indexPath.section {
         case 0: // Day 1
             cell.titleLabel.text = indexPath.row == 0 ? "Practice Problems - Limits" : "Summarize Integral Concepts"
@@ -228,7 +236,7 @@ extension StudyPlanViewController: UITableViewDelegate {
         let headerView = UIView()
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.preferredFont(forTextStyle: .headline) // iOS style headline font
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
         
         // Set header title: "Day 1", "Day 2", etc.
         label.text = "Day \(section + 1)"
@@ -245,7 +253,6 @@ extension StudyPlanViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Reduced height for the Day X header to save space
         return 24.0
     }
 }

@@ -15,6 +15,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet var backButton: UIBarButtonItem!
     // Settings data structure (title, initial state/type)
     let settingsOptions: [(title: String, type: String)] = [
         ("Study Reminder", "Switch"),
@@ -31,14 +32,29 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewDidLoad()
         
         self.title = "Profile"
+        
+        // ⬇️ NEW: Add Close Button for modal dismissal ⬇️
+        let closeButton = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(closeTapped)
+        )
+        self.navigationItem.leftBarButtonItem = closeButton
+        
         setupTableView()
+    }
+    
+    // ⬇️ NEW: Action method to dismiss the modal view controller ⬇️
+    @objc func closeTapped() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         
-        // ⬇️ FIX 1: Register the custom UserInfoCell XIB (Assuming name "UserInfoCell") ⬇️
+        // FIX 1: Register the custom UserInfoCell XIB (Assuming name "UserInfoCell")
         let userInfoNib = UINib(nibName: "UserInfoCell", bundle: nil)
         tableView.register(userInfoNib, forCellReuseIdentifier: "UserInfoCellID")
         
@@ -72,9 +88,8 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         
         switch section {
         case .userInfo:
-            // ⬇️ FIX 2: Dequeue the custom UserInfoCell ⬇️
+            // FIX 2: Dequeue the custom UserInfoCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserInfoCellID", for: indexPath) as? UserInfoCell else {
-                // Fallback (should be replaced with proper UserInfoCell registration/creation)
                 let placeholderCell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
                 placeholderCell.selectionStyle = .none
                 placeholderCell.textLabel?.text = "Alex Smith"
@@ -84,14 +99,13 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
             
             cell.selectionStyle = .none
             
-            // ⬇️ NOTE: In your real UserInfoCell, you would call a configure method here: ⬇️
+            // NOTE: In your real UserInfoCell, you would call a configure method here:
             /* cell.configure(
-                name: "Alex Smith",
-                email: "alexsmith@gmail.com",
-                image: UIImage(systemName: "person.circle.fill") ?? UIImage()
-            )
-            // You would also handle the Edit Profile Button action assignment here (e.g., cell.onEditTapped = { self.performSegue(...) })
-            */
+                 name: "Alex Smith",
+                 email: "alexsmith@gmail.com",
+                 image: UIImage(systemName: "person.circle.fill") ?? UIImage()
+             )
+             */
             
             return cell
             
@@ -117,7 +131,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath)
             
             cell.textLabel?.text = "Logout"
-            cell.textLabel?.textColor = .systemBlue
+            cell.textLabel?.textColor = .systemRed
             cell.textLabel?.textAlignment = .center
             cell.accessoryView = nil
             cell.accessoryType = .none
@@ -149,10 +163,10 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         switch section {
         case .userInfo: return 140 // Taller cell for the profile card
         case .settings, .actions: return 52 // Adds ~8 points of vertical space between settings rows
-        
+            
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionType = ProfileSection.allCases[section]
         switch sectionType {
@@ -160,7 +174,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         default: return 0.0
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let sectionType = ProfileSection.allCases[section]
         switch sectionType {
