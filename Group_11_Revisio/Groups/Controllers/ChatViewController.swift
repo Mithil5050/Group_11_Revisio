@@ -11,7 +11,7 @@ import InputBarAccessoryView
 
 class ChatViewController: MessagesViewController {
     
-    var group: Group?
+    var group: Group!
     
     // MARK: - MessageKit data
     private let currentUser = ChatSender(senderId: "self", displayName: "Me")
@@ -82,12 +82,12 @@ class ChatViewController: MessagesViewController {
         
         navigationItem.title = group?.name ?? "Group"
         navigationItem.largeTitleDisplayMode = .never
-        
+
         let titleButton = UIButton(type: .system)
-        titleButton.setTitle(group?.name ?? "Group", for: .normal)
+        titleButton.setTitle(group.name, for: .normal)
         titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         titleButton.addTarget(self, action: #selector(groupTitleTapped), for: .touchUpInside)
-        
+
         navigationItem.titleView = titleButton
         
         // iMessage-style input bar appearance
@@ -115,19 +115,15 @@ class ChatViewController: MessagesViewController {
     
     @objc private func groupTitleTapped() {
         let storyboard = UIStoryboard(name: "Groups", bundle: nil)
-        
+
         guard let settingsVC = storyboard.instantiateViewController(
             withIdentifier: "GroupSettingsVC"
         ) as? GroupSettingsViewController else {
             print("ERROR: GroupSettingsVC not found")
             return
         }
-        
+
         settingsVC.group = group
-        settingsVC.delegate = navigationController?.viewControllers.first {
-            $0 is GroupsViewController
-        } as? LeaveGroupDelegate
-        
         navigationController?.pushViewController(settingsVC, animated: true)
     }
     
@@ -264,5 +260,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         } else {
             inputBar.setStackViewItems([inputBar.sendButton], forStack: .right, animated: true)
         }
+    }
+}
+extension ChatViewController: LeaveGroupDelegate {
+    func didLeaveGroup(_ group: Group) {
+        navigationController?.popToRootViewController(animated: true)
     }
 }
