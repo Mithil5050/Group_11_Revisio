@@ -12,21 +12,21 @@ class GroupSettingsViewController: UIViewController {
     // MARK: - IBOutlets
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var infoView: UIView!
-    @IBOutlet weak var docsView: UIView!
-    @IBOutlet weak var leaderboardView: UIView!
-
-    // Info view outlets (inside infoView)
-    @IBOutlet weak var membersCollectionView: UICollectionView!
-    @IBOutlet weak var groupInfoTitleLabel: UILabel!
-    @IBOutlet weak var membersCountLabel: UILabel!
-    @IBOutlet weak var hideAlertsSwitch: UISwitch!
-    @IBOutlet weak var leaveButton: UIButton!
-
-    // Docs view
-    @IBOutlet weak var docsCollectionView: UICollectionView!
-
-    // Leaderboard view
-    @IBOutlet weak var leaderboardTableView: UITableView!
+//    @IBOutlet weak var docsView: UIView!
+//    @IBOutlet weak var leaderboardView: UIView!
+//
+//    // Info view outlets (inside infoView)
+//    @IBOutlet weak var membersCollectionView: UICollectionView!
+//    @IBOutlet weak var groupInfoTitleLabel: UILabel!
+//    @IBOutlet weak var membersCountLabel: UILabel!
+//    @IBOutlet weak var hideAlertsSwitch: UISwitch!
+//    @IBOutlet weak var leaveButton: UIButton!
+//
+//    // Docs view
+//    @IBOutlet weak var docsCollectionView: UICollectionView!
+//
+//    // Leaderboard view
+//    @IBOutlet weak var leaderboardTableView: UITableView!
 
     // Data
     var group: Group!
@@ -42,26 +42,26 @@ class GroupSettingsViewController: UIViewController {
         segmentedControl.selectedSegmentIndex = 0
         showSegment(index: 0)
 
-        groupInfoTitleLabel.text = group?.name ?? "Group"
-        membersCountLabel.text = "\(members.count) members"
+        //groupInfoTitleLabel.text = group?.name ?? "Group"
+        //membersCountLabel.text = "\(members.count) members"
 
         // style leave button
-        leaveButton.layer.cornerRadius = 12
-        leaveButton.setTitleColor(.systemRed, for: .normal)
-        leaveButton.backgroundColor = UIColor.systemGray6
+        //leaveButton.layer.cornerRadius = 12
+        //leaveButton.setTitleColor(.systemRed, for: .normal)
+        //leaveButton.backgroundColor = UIColor.systemGray6
 
         // register / datasource delegates
-        membersCollectionView.dataSource = self
-        membersCollectionView.delegate = self
-        membersCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "MemberCellIdentifier")
+        //membersCollectionView.dataSource = self
+        //membersCollectionView.delegate = self
+        //membersCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "MemberCellIdentifier")
 
-        docsCollectionView.dataSource = self
-        docsCollectionView.delegate = self
-        docsCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "DocumentCellIdentifier")
+        //docsCollectionView.dataSource = self
+        //docsCollectionView.delegate = self
+        //docsCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "DocumentCellIdentifier")
 
-        leaderboardTableView.dataSource = self
-        leaderboardTableView.delegate = self
-        leaderboardTableView.register(UITableViewCell.self, forCellReuseIdentifier: "LeaderboardCellIdentifier")
+        //leaderboardTableView.dataSource = self
+        //leaderboardTableView.delegate = self
+        //leaderboardTableView.register(UITableViewCell.self, forCellReuseIdentifier: "LeaderboardCellIdentifier")
     }
 
     // MARK: - Segment control
@@ -70,8 +70,9 @@ class GroupSettingsViewController: UIViewController {
     }
 
     private func showSegment(index: Int) {
-        infoView.isHidden = index != 0
-        docsView.isHidden = index != 1
+        infoView?.isHidden = index != 0
+        //docsView?.isHidden = index != 1
+        //leaderboardView?.isHidden = index != 2
     }
 
     // MARK: - Leave group
@@ -100,7 +101,7 @@ class GroupSettingsViewController: UIViewController {
     }
 }
 
-// MARK: - Collection / Table DataSources
+/*// MARK: - Collection / Table DataSources
 extension GroupSettingsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == membersCollectionView { return members.count }
@@ -171,3 +172,4 @@ extension GroupSettingsViewController: UITableViewDataSource, UITableViewDelegat
         return cell
     }
 }
+*/
