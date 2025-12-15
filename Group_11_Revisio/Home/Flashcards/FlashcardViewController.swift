@@ -16,10 +16,6 @@ var flashcards: [Flashcard] = [
 // MARK: - 3. View Controller Implementation
 class FlashcardViewController: UIViewController {
 
-    // MARK: - Context passed from GenerationViewController
-    var flashcardTopicName: String?
-    var parentSubjectName: String?
-
     // MARK: - View Controller Outlets (Connect these in your Storyboard)
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var cardLabel: UILabel!
@@ -33,11 +29,6 @@ class FlashcardViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Optional: Show the topic name in the title if provided
-        if let topicName = flashcardTopicName {
-            self.title = topicName
-        }
         
         // Initial setup
         configureCardViewAppearance()
@@ -75,6 +66,7 @@ class FlashcardViewController: UIViewController {
     // MARK: - User Interaction: Card Flip
     
     /// Handles the tap gesture to flip the card between term and definition.
+    
     @IBAction func cardTapped(_ sender: UITapGestureRecognizer) {
         let card = flashcards[currentCardIndex]
         let newText = isTermDisplayed ? card.definition : card.term

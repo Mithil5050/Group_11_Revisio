@@ -57,27 +57,27 @@ class UploadConfirmationViewController: UIViewController {
     }
     
     private func setupUI() {
-//        let guide = view.safeAreaLayoutGuide
+        let guide = view.safeAreaLayoutGuide // Use safe area for modern layout
         
         // ⭐️ ADDING NEW LABEL TO VIEW
         view.addSubview(sourceHeaderLabel)
         
-        // 🚨 UPDATED CONSTRAINTS: Anchor the label and the table
+        // 🚨 UNCOMMENTING AND ACTIVATING CONSTRAINTS: Anchor the label and the table
         if let table = UploadedContent {
             table.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
                 
-//                // 1. Anchor the Source Header Label below the top safe area
-//                sourceHeaderLabel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 20),
-//                sourceHeaderLabel.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 16),
-//                sourceHeaderLabel.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -16),
-//                
-//                // 2. Anchor the Table View right below the Source Header Label
-//                table.topAnchor.constraint(equalTo: sourceHeaderLabel.bottomAnchor, constant: 8), // Small gap
-//                table.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 16),
-//                table.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -16),
-//                table.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -100)
+                // 1. Anchor the Source Header Label below the top safe area
+                sourceHeaderLabel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 20),
+                sourceHeaderLabel.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 16),
+                sourceHeaderLabel.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -16),
+                
+                // 2. Anchor the Table View right below the Source Header Label
+                table.topAnchor.constraint(equalTo: sourceHeaderLabel.bottomAnchor, constant: 8), // Small gap
+                table.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 16),
+                table.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -16),
+                table.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -100)
             ])
         }
     }
@@ -97,24 +97,25 @@ class UploadConfirmationViewController: UIViewController {
     }
     
     private func updateUI() {
-        // You can update the sourceHeaderLabel text here if needed,
-        // e.g., sourceHeaderLabel.text = "Materials from: \(uploadedContentName ?? "Source")"
-        
-        UploadedContent?.reloadData()
+        // Updated text to reflect the source content context
+//        sourceHeaderLabel.text = "Materials from: \(uploadedContentName ?? "Source Documents")"
+//        
+//        UploadedContent?.reloadData()
     }
     
     // MARK: - Action Handlers
     
     @IBAction func DoneTapped(_ sender: Any) {
-        performSegue(withIdentifier: "showGenerationScreen", sender: uploadedMaterials)
+        performSegue(withIdentifier: "showGenerationScreenHome", sender: uploadedMaterials)
     }
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showGenerationScreen" {
-            if let destinationVC = segue.destination as? GenerationViewController {
-                destinationVC.sourceItems = sender as? [StudyContent]
-                destinationVC.parentSubjectName = self.parentSubjectName
+        if segue.identifier == "showGenerationScreenHome" {
+            if let destinationVC = segue.destination as? GenerateHomeViewController {
+                destinationVC.inputSourceData = sender as? [StudyContent]
+                // FIX: Use existing subject property to set the context title
+                destinationVC.contextSubjectTitle = self.parentSubjectName
             }
         }
     }
@@ -130,7 +131,8 @@ extension UploadConfirmationViewController: UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        // Ensure count is based on actual data
+        return uploadedMaterials.count
     }
     
     // Helper function to map generic content to specific display names/types
@@ -138,11 +140,12 @@ extension UploadConfirmationViewController: UITableViewDataSource, UITableViewDe
          let index = uploadedMaterials.firstIndex(where: { $0.id == item.id }) ?? 0
          switch index {
          case 0:
-             return ("Big Data", "PDF")
+             return ("Big Data Fundamentals", "PDF Document")
          case 1:
-             return ("Big Data 2", "link")
+             return ("Core Data Science Concepts", "Web Link")
          default:
-             return (item.filename, "Text Input")
+             // Fallback logic
+             return (item.filename.isEmpty ? "Untitled Content" : item.filename, "Text Input")
          }
     }
     
@@ -161,16 +164,13 @@ extension UploadConfirmationViewController: UITableViewDataSource, UITableViewDe
         let symbolName: String
         let tintColor: UIColor
         switch display.type.lowercased() {
-        case "pdf", "document", "source":
+        case "pdf document":
             symbolName = "doc.fill"
             tintColor = .systemRed
-        case "png":
-            symbolName = "photo"
-            tintColor = .systemGreen
-        case "link":
+        case "web link":
             symbolName = "link"
             tintColor = .systemBlue
-        case "txt":
+        case "text input":
             symbolName = "textformat"
             tintColor = .systemGray
         default:
@@ -183,7 +183,7 @@ extension UploadConfirmationViewController: UITableViewDataSource, UITableViewDe
         content.secondaryTextProperties.font = UIFont.systemFont(ofSize: 14)
         content.imageProperties.tintColor = tintColor
         
-        // Use the cell's background for a distinct list item look
+        // Use the cell's background for a distinct list item look (iOS 26 aesthetic)
         cell.backgroundColor = .systemGray6
         cell.contentConfiguration = content
         cell.selectionStyle = .none
