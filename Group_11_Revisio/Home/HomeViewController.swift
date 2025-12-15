@@ -8,6 +8,7 @@
 import UIKit
 
 // Place these structures at the very top of HomeViewController.swift
+// The ContentItem structure is required for your data arrays
 //struct ContentItem: Hashable, Sendable {
 //    let title: String
 //    let iconName: String
@@ -41,6 +42,17 @@ let headerID = "HeaderID"
 let showStudyPlanSegueID = "ShowStudyPlanSegue"
 // Add a constant for the hero/today task segue (make sure this matches your storyboard)
 let showTodayTaskSegueID = "showTodayTaskSegue"
+// Add constants for the specific game segues (New)
+let showConnectionsSegueID = "ConnectionsSegue"
+let showWordFillSegueID = "ShowWordFillSegue"
+
+
+// MARK: - QuickGames Delegate Protocol
+// The HomeViewController will conform to this to handle precise game taps
+protocol QuickGamesCellDelegate: AnyObject {
+    /// Notifies the HomeViewController which specific quick game was selected.
+    func didSelectQuickGame(gameTitle: String)
+}
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
@@ -77,7 +89,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         // Game data updated for two distinct quick games
         gameItems = [
             GameItem(title: "Word Fill", imageAsset: "Screenshot 2025-12-09 at 3.06.21 PM"),
-            GameItem(title: "Connections", imageAsset: "Screenshot 2025-12-12 at 11.26.08 AM")
+            GameItem(title: "Connections", imageAsset: "Screenshot_2025-12-15_at_3.58.26_PM-removebg-preview-2")
         ]
 
         // 2. Setup
@@ -192,7 +204,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         case .studyPlan: return studyPlanData.count
         case .uploadContent: return 1 // Single cell containing the table view
         case .continueLearning: return learningItems.count
-        case .quickGames: return 1 // FIX: Returns 1 cell to hold both game cards
+        case .quickGames: return 1 // Single cell to hold both game cards
         }
     }
     
@@ -231,11 +243,13 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         case .quickGames:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickGamesCellID, for: indexPath) as! QuickGamesCollectionViewCell
             
-            let item1 = gameItems[0] // Word Scramble
+            // **IMPORTANT: Set the delegate for precise tap handling**
+            cell.delegate = self
+            
+            let item1 = gameItems[0] // Word Fill
             let item2 = gameItems[1] // Connections
             
-            // FIX: Configure the single cell with BOTH data items
-            // This relies on QuickGamesCollectionViewCell having the configure(with:and:) method.
+            // Configure the single cell with BOTH data items
             cell.configure(with: item1, and: item2)
             
             return cell
@@ -245,7 +259,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard kind == UICollectionView.elementKindSectionHeader else {
-            fatalError("Unexpected supplementary view kind.")
+            // Return an empty/default header if the kind is not what we expect
+            let defaultHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                               withReuseIdentifier: headerID,
+                                                                               for: indexPath) as! HeaderViewCollectionReusableView
+            defaultHeader.isHidden = true
+            return defaultHeader
         }
         
         let sectionType = HomeSection.allCases[indexPath.section]
@@ -253,16 +272,19 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         // Check if the section actually uses the supplementary header view.
         switch sectionType {
         case .hero, .studyPlan, .uploadContent:
-            // These sections do not use an external header.
-            return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                   withReuseIdentifier: headerID,
-                                                                   for: indexPath)
+            // These sections do not require a visible external header.
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                             withReuseIdentifier: headerID,
+                                                                             for: indexPath) as! HeaderViewCollectionReusableView
+            headerView.isHidden = true
+            return headerView
             
         case .continueLearning, .quickGames:
             // These sections require and use the configured HeaderViewCollectionReusableView.
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                           withReuseIdentifier: headerID,
-                                                                           for: indexPath) as! HeaderViewCollectionReusableView
+                                                                             withReuseIdentifier: headerID,
+                                                                             for: indexPath) as! HeaderViewCollectionReusableView
+            headerView.isHidden = false
             
             let title: String
             switch sectionType {
@@ -290,14 +312,14 @@ extension HomeViewController {
         
         case .studyPlan:
             print("Study Plan Card Tapped: Navigating to the full Study Plan interface.")
-            // **PERFORM THE SEGUE**
+            // PERFORM THE SEGUE
             performSegue(withIdentifier: showStudyPlanSegueID, sender: nil)
             
         case .quickGames:
-            // Note: This tap will register for the entire container cell. You may need
-            // to implement hit testing within QuickGamesCollectionViewCell to know which
-            // card was tapped.
-            print("Quick Games Container Tapped.")
+            // Taps on this container are now handled by the QuickGamesCellDelegate method,
+            // which fires from inside the cell when a specific game card is tapped.
+            print("Quick Games Container tapped. Awaiting delegate feedback for specific card.")
+            break
             
         case .uploadContent:
             // Taps on the file list inside the cell are handled by the inner UITableViewDelegate.
@@ -306,6 +328,25 @@ extension HomeViewController {
         case .continueLearning:
             print("Continue Learning Tapped: Open item at index \(indexPath.item)")
             
+        }
+    }
+}
+
+// MARK: - QuickGamesCellDelegate Implementation (New)
+extension HomeViewController: QuickGamesCellDelegate {
+    
+    func didSelectQuickGame(gameTitle: String) {
+        switch gameTitle {
+        case "Word Fill":
+            print("Action: Launching Word Fill View Controller.")
+            // Launch the Word Fill screen
+            performSegue(withIdentifier: showWordFillSegueID, sender: nil)
+        case "Connections":
+            print("Action: Launching Connections View Controller.")
+            // Launch the Connections screen
+            performSegue(withIdentifier: showConnectionsSegueID, sender: nil)
+        default:
+            print("Error: Unknown quick game selected.")
         }
     }
 }

@@ -1,8 +1,8 @@
 //
-//  TodaysTaskViewController.swift
-//  Group_11_Revisio
+// TodaysTaskViewController.swift
+// Group_11_Revisio
 //
-//  Created by Mithil on 10/12/25.
+// Created by Mithil on 10/12/25.
 //
 
 import UIKit
@@ -14,36 +14,51 @@ enum StudyPlanSection: Int, CaseIterable {
     case tasks
 }
 
+// NOTE: Assume these classes exist in your project with required outlets/methods
+//class TaskCell2: UITableViewCell {
+//    @IBOutlet weak var titleLabel: UILabel!
+//    @IBOutlet weak var subtitleLabel: UILabel!
+//}
+
 class TodaysTaskViewController: UIViewController {
 
     // MARK: - IBOutlets
 
-    // 1. The main vertical scroll view (created in Storyboard/XIB)
     @IBOutlet weak var mainScrollView: UIScrollView!
-    
-    // 2. Collection View for Date Buttons (Calendar)
     @IBOutlet weak var dateCollectionView: UICollectionView!
-    
-    // 3. Info Card View (Replaces subjectCollectionView - Assuming a UICollectionView for the card)
     @IBOutlet weak var infoCollectionView: UICollectionView!
-    
-    // 4. Table View for the vertical list of Tasks
     @IBOutlet weak var taskTableView: UITableView!
-    
-    // 5. CRUCIAL: Height constraint for the taskTableView
     @IBOutlet weak var taskTableViewHeightConstraint: NSLayoutConstraint!
     
-    // MARK: - Data Source Example
+    // MARK: - Dynamic Data Source
     
-    let days: [String] = ["Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"]
+    // ⬇️ NEW: Holds the actual Date objects for the next 10 days ⬇️
+    var dateData: [Date] = []
     
-    // **NEW: Subject headers mapped to sections (0-3)**
+    // Tracks the currently selected date index (defaults to today)
+    var selectedDateIndex: Int = 0
+    
+    // **Subject headers mapped to sections (0-3)**
     let subjectHeaders = ["Calculus", "Big Data", "Data Structures", "MMA"]
+
+    // MARK: - Date Formatters
+    private let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE" // Fri, Sat, Sun
+        return formatter
+    }()
+    
+    private let dateNumberFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d" // Date number only (10, 11, 12)
+        return formatter
+    }()
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        generateDateData() // ⬇️ NEW: Calculate the dates
         // setupUI()
         setupCollectionViews()
         setupTableView()
@@ -55,9 +70,27 @@ class TodaysTaskViewController: UIViewController {
         // CRUCIAL FIX: Force layout pass and then update the height constraint.
         taskTableView.layoutIfNeeded()
         taskTableViewHeightConstraint.constant = taskTableView.contentSize.height
+        
+        // CRITICAL FIX: Ensure scrolling is disabled when embedded in a Scroll View
+        taskTableView.isScrollEnabled = true
     }
 
     // MARK: - Setup
+    
+    // ⬇️ NEW: Function to generate 10 consecutive Date objects ⬇️
+    private func generateDateData() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Generate the current day + the next 9 days (10 total)
+        for i in 0..<10 {
+            if let date = calendar.date(byAdding: .day, value: i, to: today) {
+                dateData.append(date)
+            }
+        }
+        // Set 'Today' (index 0) as selected by default
+        selectedDateIndex = 0
+    }
     
     private func setupCollectionViews() {
         // Date Collection View
@@ -67,7 +100,7 @@ class TodaysTaskViewController: UIViewController {
         let dateCellNib = UINib(nibName: "DateButtonCell2", bundle: nil)
         dateCollectionView.register(dateCellNib, forCellWithReuseIdentifier: "DateButtonCell")
         
-        // Info Card Collection View (NEW)
+        // Info Card Collection View
         infoCollectionView.dataSource = self
         infoCollectionView.delegate = self
         // Register the XIB for the Info Card cell
@@ -82,7 +115,7 @@ class TodaysTaskViewController: UIViewController {
         taskTableView.isScrollEnabled = true
         
         // Register the XIB for the task list cell
-        let taskCellNib = UINib(nibName: "TaskCell2", bundle: nil) // Using TaskCell2 from the uploaded file
+        let taskCellNib = UINib(nibName: "TaskCell2", bundle: nil)
         taskTableView.register(taskCellNib, forCellReuseIdentifier: "TaskCell")
         taskTableView.separatorStyle = .none
     }
@@ -103,7 +136,7 @@ extension TodaysTaskViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == dateCollectionView {
-            return days.count // Multiple days
+            return dateData.count // ⬇️ Use the dynamic date count
         } else if collectionView == infoCollectionView {
             return 1 // Only one Info Card
         }
@@ -112,23 +145,21 @@ extension TodaysTaskViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == dateCollectionView {
-            // REUSE ID and CAST MUST MATCH
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateButtonCell", for: indexPath) as? DateButtonCell2 else {
                 fatalError("Unable to dequeue DateButtonCell2 with identifier DateButtonCell. Check NIB registration or class name.")
             }
             
-            // --- Dynamic Date Configuration ---
-            let dayAbbreviation = days[indexPath.row]
-            let dateNumber = "\(indexPath.row + 10)"
-            let isSelected = (indexPath.row == 4)
+            // ⬇️ MODIFIED: Use Date Formatters ⬇️
+            let date = dateData[indexPath.row]
+            let dayAbbreviation = dayFormatter.string(from: date)
+            let dateNumber = dateNumberFormatter.string(from: date)
+            let isSelected = (indexPath.row == selectedDateIndex)
             
             cell.configure(day: dayAbbreviation, dateNumber: dateNumber, isSelected: isSelected)
-            // --- End Configuration ---
             
             return cell
             
         } else if collectionView == infoCollectionView {
-            // New Info Card Cell
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InfoCollectionViewCell", for: indexPath) as? InfoCollectionViewCell else {
                 fatalError("Unable to dequeue InfoCollectionViewCell. Check NIB registration or class name.")
             }
@@ -139,11 +170,21 @@ extension TodaysTaskViewController: UICollectionViewDataSource, UICollectionView
         return UICollectionViewCell()
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == dateCollectionView {
+            // Update selection index and reload to show the change
+            selectedDateIndex = indexPath.row
+            collectionView.reloadData()
+            
+            // TODO: Reload the taskTableView based on the newly selected date
+        }
+    }
+    
     // UICollectionViewDelegateFlowLayout for size customization
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == dateCollectionView {
-            // Fixed size for the round date buttons (e.g., 60x60)
-            return CGSize(width: 52, height: 80) // Using size from DateButtonCell2.xib
+            // Fixed size for the round date buttons (e.g., 52x80)
+            return CGSize(width: 52, height: 80)
         } else if collectionView == infoCollectionView {
             // Info Card must span the full width of the collection view
             let collectionViewWidth = collectionView.bounds.width
@@ -167,7 +208,6 @@ extension TodaysTaskViewController: UICollectionViewDataSource, UICollectionView
 extension TodaysTaskViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // We use the count of the subject headers array (4)
         return subjectHeaders.count
     }
     
@@ -176,7 +216,6 @@ extension TodaysTaskViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Using the "TaskCell" identifier for the TaskCell2 implementation
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as? TaskCell2 else {
             return UITableViewCell()
         }
@@ -190,10 +229,10 @@ extension TodaysTaskViewController: UITableViewDataSource {
             cell.titleLabel.text = indexPath.row == 0 ? "Practice Problems - Data Lakes" : "Summarize ETL Concepts"
             cell.subtitleLabel.text = indexPath.row == 0 ? "Quiz" : "Short Notes"
         case 2: // Data Structures
-            cell.titleLabel.text = indexPath.row == 0 ? "Review Calculus Theorems" : "Practice Big Data Queries"
-            cell.subtitleLabel.text = indexPath.row == 0 ? "Revision" : "Quiz"
+            cell.titleLabel.text = indexPath.row == 0 ? "Implement Graph Traversal" : "Analyze Sorting Algorithms"
+            cell.subtitleLabel.text = indexPath.row == 0 ? "Coding" : "Revision"
         case 3: // MMA
-            cell.titleLabel.text = indexPath.row == 0 ? "Analyze MMA Technique Videos" : "Draft Study Group Agenda"
+            cell.titleLabel.text = indexPath.row == 0 ? "Analyze Striking Technique Videos" : "Draft Study Group Agenda"
             cell.subtitleLabel.text = indexPath.row == 0 ? "Notes" : "Planning"
         default:
             cell.titleLabel.text = "Error"

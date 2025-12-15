@@ -31,17 +31,21 @@ class DateButtonCell2: UICollectionViewCell {
     // Function to visually select the cell (e.g., 'Tue' in the screenshot)
     func configure(day: String, dateNumber: String, isSelected: Bool) {
         dayLabel.text = day
-        dateLabel.text = dateNumber // <-- Use the date number here
+        dateLabel.text = dateNumber
 
         if isSelected {
-            containerView.backgroundColor = .systemBlue
+            // Selected state: iOS standard accent color with white text
+            containerView.backgroundColor = UIColor(hex: "91C1EF")
+            dayLabel.textColor = .systemBlue
+            dateLabel.textColor = .systemBlue
+        } else {
+            // Unselected state: Uses the requested static hex color
+            // This color will not change in Dark Mode.
+            containerView.backgroundColor = UIColor(hex: "91C1EF")
+            
+            // Text colors set to adapt to system dark/light mode
             dayLabel.textColor = .white
             dateLabel.textColor = .white
-        } else {
-            // Set unselected appearance
-            containerView.backgroundColor = .systemGray5
-            dayLabel.textColor = .label
-            dateLabel.textColor = .label
         }
     }
 }

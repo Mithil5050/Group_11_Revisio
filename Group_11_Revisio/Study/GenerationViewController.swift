@@ -248,14 +248,14 @@ class GenerationViewController: UIViewController {
                 instructionVC.quizTopic = topicData
                 instructionVC.parentSubjectName = self.parentSubjectName
             }
-        } else if segue.identifier == "ShowFlashcardsFromGen" {
-            // Target: FlashcardViewController
-            if let flashcardVC = segue.destination as? FlashcardViewController {
-                // Pass contextual data to the Flashcard View Controller
-                flashcardVC.flashcardTopicName = topicData.name
-                flashcardVC.parentSubjectName = self.parentSubjectName
-                // NOTE: In a production app, you would pass the actual generated flashcard array here.
-            }
+//        } else if segue.identifier == "ShowFlashcardsFromGen" {
+//            //            // Target: FlashcardViewController
+//            //            if let flashcardVC = segue.destination as? FlashcardViewController {
+//            //                // Pass contextual data to the Flashcard View Controller
+//            //                flashcardVC.flashcardTopicName = topicData.name
+//            //                flashcardVC.parentSubjectName = self.parentSubjectName
+//            // NOTE: In a production app, you would pass the actual generated flashcard array here.
+//        }
         }
     }
 }
