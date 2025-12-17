@@ -28,20 +28,16 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.hidesBackButton = true
-            detailTableView.isScrollEnabled = false // Keep the table fixed size
-            detailTableView.rowHeight = 55         // Set a consistent height
-            
-            // IMPORTANT: Only register this if you are NOT using a prototype cell
-            // detailTableView.register(UITableViewCell.self, forCellReuseIdentifier: "DetailCell")
-
+            detailTableView.isScrollEnabled = false
+            detailTableView.rowHeight = 55
+           
             detailTableView.dataSource = self
             detailTableView.delegate = self
 
         detailTableView.dataSource = self
         detailTableView.delegate = self
         displayResults()
-        //setupScoreLabelPosition()
-        // Do any additional setup after loading the view.
+       
     }
     
     
@@ -50,18 +46,17 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
                 return
             }
             
-            // 1. Search the navigation stack for the InstructionViewController
+           
             for viewController in navigationController.viewControllers {
-                // You need to replace 'InstructionViewController' with the actual name of your instructions class
-                // I will assume the class name is 'InstructionViewController' for now.
+                
                 if viewController.isKind(of: InstructionViewController.self) {
-                    // 2. If found, pop back to that specific instance
+                    e
                     navigationController.popToViewController(viewController, animated: true)
                     return
                 }
             }
             
-            // Fallback if the Instructions VC isn't found (e.g., if it's the root)
+           
             navigationController.popToRootViewController(animated: true)
     }
     
@@ -89,18 +84,18 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
         return formatter.string(from: interval) ?? "00:00"
     }
     func setupScoreLabelPosition() {
-        // 1. Ensure Auto Layout is disabled for the label's frame
+       
         scoreLabel.translatesAutoresizingMaskIntoConstraints = true
         
-        // 2. Calculate the center of the gaugeContainerView
+       
         let centerX = gaugeContainerView.bounds.midX
         let centerY = gaugeContainerView.bounds.midY
         
-        // Define a size for the label (must be large enough for the text)
-        let labelWidth: CGFloat = 120 // Make it wide
+        
+        let labelWidth: CGFloat = 120
         let labelHeight: CGFloat = 40
         
-        // 3. Set the frame to center it
+        
         scoreLabel.frame = CGRect(
             x: centerX - (labelWidth / 2),
             y: centerY - (labelHeight / 2),
@@ -108,7 +103,7 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
             height: labelHeight
         )
         
-        // 4. Ensure label styling is correct (must be set in code since constraints were removed)
+        
         scoreLabel.textAlignment = .center
         scoreLabel.font = UIFont.systemFont(ofSize: 30, weight: .bold)
         scoreLabel.textColor = .black // Make sure the color is visible
@@ -147,36 +142,34 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
             performSegue(withIdentifier: "ShowReviewDetail", sender: finalResult!.details)
         }
     }
-    // ResultsViewController.swift
-
-    // ... inside the ResultsViewController class ...
+    
 
     func drawScoreGauge(score: Int, total: Int) {
-        // Clean up any previous layers before drawing new ones
+        
         gaugeContainerView.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
 
         let percentage = CGFloat(score) / CGFloat(total)
         let center = CGPoint(x: gaugeContainerView.bounds.midX, y: gaugeContainerView.bounds.midY)
-        let radius: CGFloat = 80 // Adjust size as needed
-        let startAngle: CGFloat = -.pi / 2 // Start at the top center
+        let radius: CGFloat = 80
+        let startAngle: CGFloat = -.pi / 2
         let endAngle: CGFloat = startAngle + (2 * .pi * percentage)
         
-        // --- 1. Draw the Track (Background) ---
+        
         let trackPath = UIBezierPath(arcCenter: center,
                                      radius: radius,
-                                     startAngle: 0, // Full circle start
-                                     endAngle: 2 * .pi, // Full circle end
+                                     startAngle: 0,
+                                     endAngle: 2 * .pi,
                                      clockwise: true)
         
         let trackLayer = CAShapeLayer()
         trackLayer.path = trackPath.cgPath
         trackLayer.strokeColor = UIColor.systemGray4.cgColor
-        trackLayer.lineWidth = 15 // Thickness of the ring
+        trackLayer.lineWidth = 15
         trackLayer.fillColor = UIColor.clear.cgColor
         
         gaugeContainerView.layer.addSublayer(trackLayer)
         
-        // --- 2. Draw the Score Arc (Foreground) ---
+        
         let scorePath = UIBezierPath(arcCenter: center,
                                      radius: radius,
                                      startAngle: startAngle,
@@ -185,14 +178,14 @@ class ResultsViewController: UIViewController, UITableViewDataSource, UITableVie
         
         let scoreLayer = CAShapeLayer()
         scoreLayer.path = scorePath.cgPath
-        scoreLayer.strokeColor = UIColor.systemBlue.cgColor // Your primary color
+        scoreLayer.strokeColor = UIColor.systemBlue.cgColor
         scoreLayer.lineWidth = 15
-        scoreLayer.lineCap = .round // Makes the ends round
+        scoreLayer.lineCap = .round
         scoreLayer.fillColor = UIColor.clear.cgColor
         
         gaugeContainerView.layer.addSublayer(scoreLayer)
         
-        // Optional: Animate the drawing
+        
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.fromValue = 0
         animation.toValue = 1

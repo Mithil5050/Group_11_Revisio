@@ -31,27 +31,21 @@ class InstructionViewController: UIViewController {
                 
                 
         styleButtons()
-        
-        //getInstructionsText()
-
-        // Do any additional setup after loading the view.
-    }
-    // InstructionViewController.swift - Replace the existing setupLabels()
-
-    // InstructionViewController.swift
+}
+    
 
     func setupLabels() {
-        // 🛑 Priority: sourceNameForQuiz -> Topic Name -> Fallback
+        
         let displayName = sourceNameForQuiz ?? quizTopic?.name ?? "Quiz"
         
-        // This will now result in "Hadoop Doc Quiz" instead of "Quiz Quiz"
+        
         titleLabel.text = "\(displayName) Quiz"
         self.title = displayName
         
         instructionsTextView.text = getInstructionsText()
     }
         func styleButtons() {
-            // Apply rounded corners (You might have done this in the Storyboard, but enforcing it here is safe)
+           
             attemptQuizButton.layer.cornerRadius = 10
             attemptQuizButton.clipsToBounds = true
             
@@ -59,7 +53,7 @@ class InstructionViewController: UIViewController {
             saveExitButton.clipsToBounds = true
         }
 
-        // Returns the static rules for the quiz
+        
         func getInstructionsText() -> String {
             return """
             1. This quiz is not marked and will not affect any official course grades or records. Use it as a self-assessment tool.
@@ -81,22 +75,17 @@ class InstructionViewController: UIViewController {
     @IBAction func saveAndExitTapped(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
-    // InstructionViewController.swift
-
-    // InstructionViewController.swift
-
-    // InstructionViewController.swift
+   
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "StartQuiz" {
             
             if let quizVC = segue.destination as? QuizViewController {
                 
-                // --- SIMPLIFY THE LOGIC ---
-                // 1. Get the most reliable name (likely set by the *previous* VC)
+               
                 let nameToPass = self.sourceNameForQuiz ?? self.quizTopic?.name ?? "DEFAULT_FALLBACK_SOURCE"
                 
-                // 2. CRITICAL ASSIGNMENT: Pass the final determined name
+              
                 quizVC.selectedSourceName = nameToPass
                   
                 print("InstructionVC forwarding source: \(nameToPass) to QuizVC.")

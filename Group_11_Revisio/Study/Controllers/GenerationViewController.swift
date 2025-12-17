@@ -34,20 +34,18 @@ class GenerationViewController: UIViewController {
     
     // MARK: - Data Properties
     var currentGenerationType: GenerationType = .none
-    var sourceItems: [Any]? // Data source (e.g., Topic or Source objects)
-    var parentSubjectName: String? // Contextual name for the navigation bar/context
+    var sourceItems: [Any]?
+    var parentSubjectName: String?
     
     // MARK: - IBOutlets
     
     // Main Action Button
     @IBOutlet weak var generateButton: UIButton!
     
-    // Settings container views (These should overlap in the Storyboard)
+    
     @IBOutlet weak var QuizSettingsView: UIView!
     @IBOutlet weak var FlashcardSettingsView: UIView!
-    @IBOutlet weak var emptySettingsPlaceholder: UIView! // Used for types without custom settings (Notes/Cheatsheet)
-    
-    // Top Tab Buttons (Function as a segment control)
+    @IBOutlet weak var emptySettingsPlaceholder: UIView!
     @IBOutlet weak var quizButton: UIButton!
     @IBOutlet weak var flashcardsButton: UIButton!
     @IBOutlet weak var notesButton: UIButton!
@@ -58,34 +56,31 @@ class GenerationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Setup initial state: Select Quiz by default
+       
         showSettingsView(QuizSettingsView)
         updateButtonHighlight(selectedButton: quizButton)
         
-        // Initial button state (should be updated immediately by updateGenerateButton)
+        
         updateGenerateButton(for: .quiz)
     }
     
     // MARK: - Private Configuration Methods
     
-    /**
-     Controls which settings view is visible to the user.
-     - Parameter viewToShow: The specific settings container view to display.
-     */
+   
     private func showSettingsView(_ viewToShow: UIView) {
-        // 1. Create an array of all settings views
+        
         let allSettingsViews: [UIView?] = [
             QuizSettingsView,
             FlashcardSettingsView,
             emptySettingsPlaceholder
         ]
         
-        // 2. Hide all views
+        
         for view in allSettingsViews {
             view?.isHidden = true
         }
         
-        // 3. Show the selected view
+        
         viewToShow.isHidden = false
     }
     
@@ -100,7 +95,7 @@ class GenerationViewController: UIViewController {
             title = "Generate"
             isEnabled = false
         } else {
-            title = "Generate \(type.description)" // Uses the CustomStringConvertible extension
+            title = "Generate \(type.description)"
             isEnabled = true
         }
         
@@ -132,12 +127,12 @@ class GenerationViewController: UIViewController {
             let isSelected = (button === selectedButton)
             
             if isSelected {
-                // SELECTED STATE: Medium gray background, black text/icon.
+               
                 button?.backgroundColor = selectedBackground
                 button?.setTitleColor(selectedTitleColor, for: .normal)
-                button?.tintColor = selectedIconTint // Controls the icon color
+                button?.tintColor = selectedIconTint
             } else {
-                // UNSELECTED STATE: Very light gray background, dark gray text/icon.
+               
                 button?.backgroundColor = unselectedBackground
                 button?.setTitleColor(unselectedTitleColor, for: .normal)
                 button?.tintColor = unselectedIconTint
@@ -185,10 +180,10 @@ class GenerationViewController: UIViewController {
             topicToPass = topic
             finalSpecificName = topic.name
         } else if let source = sourceItem as? Source {
-            // 🛑 FIX: Use the actual source name (e.g., "Hadoop Doc")
+           
             finalSpecificName = source.name
             
-            // Create the topic using the specific source name
+          
             topicToPass = Topic(name: source.name,
                                 lastAccessed: "N/A",
                                 materialType: currentGenerationType.description)
@@ -206,20 +201,16 @@ class GenerationViewController: UIViewController {
         }
     }
     
-    // MARK: - Navigation
-    
-    /**
-     Prepares the destination view controller before the transition.
-     */
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        // 🛑 Unpack the tuple payload
+        
         guard let data = sender as? (topic: Topic, sourceName: String) else { return }
         
         if segue.identifier == "ShowQuizInstructionsFromGen" {
             if let instructionVC = segue.destination as? InstructionViewController {
                 instructionVC.quizTopic = data.topic
-                instructionVC.sourceNameForQuiz = data.sourceName // This will now be "Hadoop Doc"
+                instructionVC.sourceNameForQuiz = data.sourceName 
                 instructionVC.parentSubjectName = self.parentSubjectName
             }
         }
