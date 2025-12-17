@@ -95,10 +95,10 @@ class ChatViewController: MessagesViewController {
         
         // Default: show mic button
         messageInputBar.setStackViewItems([micButton], forStack: .right, animated: false)
-        messageInputBar.setRightStackViewWidthConstant(to: 38, animated: false)
+        messageInputBar.setRightStackViewWidthConstant(to: 42, animated: false)
         
         // Style input bar (iMessage-like)
-        messageInputBar.inputTextView.placeholder = "Aa"
+        messageInputBar.inputTextView.placeholder = "Message"
         messageInputBar.inputTextView.font = UIFont.systemFont(ofSize: 16)
         messageInputBar.sendButton.setTitle("", for: .normal)
         messageInputBar.sendButton.setImage(
@@ -107,9 +107,33 @@ class ChatViewController: MessagesViewController {
         )
         messageInputBar.sendButton.tintColor = .systemBlue
         messageInputBar.sendButton.setSize(
-            CGSize(width: 36, height: 36),
+            CGSize(width: 48, height: 48),
             animated: false
         )
+        
+        // MARK: - iMessage input bar appearance
+
+        messageInputBar.backgroundView.backgroundColor = .clear
+        messageInputBar.backgroundView.layer.shadowColor = UIColor.clear.cgColor
+        // Capsule text field
+        let tv = messageInputBar.inputTextView
+        tv.backgroundColor = UIColor.secondarySystemBackground
+        tv.layer.cornerRadius = 20
+        tv.layer.masksToBounds = true
+        tv.font = UIFont.systemFont(ofSize: 16)
+        tv.textContainerInset = UIEdgeInsets(
+            top: 10,
+            left: 14,
+            bottom: 10,
+            right: 14
+        )
+
+        // Reduce overall bar height (THIS is the missing magic)
+        messageInputBar.padding.top = 6
+        messageInputBar.padding.bottom = 6
+        messageInputBar.padding.left = 8
+        messageInputBar.padding.right = 8
+        messageInputBar.middleContentViewPadding.right = 6
         
         // initial inset
         view.layoutIfNeeded()
@@ -123,24 +147,7 @@ class ChatViewController: MessagesViewController {
         titleButton.addTarget(self, action: #selector(groupTitleTapped), for: .touchUpInside)
 
         navigationItem.titleView = titleButton
-        
-        // iMessage-style input bar appearance
-        messageInputBar.backgroundView.backgroundColor = .clear
-        messageInputBar.backgroundView.layer.cornerRadius = 18
-        messageInputBar.backgroundView.clipsToBounds = true
-        
-        let blur = UIBlurEffect(style: .systemMaterial)
-        let blurView = UIVisualEffectView(effect: blur)
-        blurView.frame = messageInputBar.backgroundView.bounds
-        blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        messageInputBar.backgroundView.insertSubview(blurView, at: 0)
-        
-        messageInputBar.inputTextView.backgroundColor = .clear
-        messageInputBar.inputTextView.layer.cornerRadius = 16
-        messageInputBar.inputTextView.layer.borderWidth = 0
-        messageInputBar.inputTextView.textContainerInset = UIEdgeInsets(
-            top: 8, left: 12, bottom: 8, right: 12
-        )
+
         
         messagesCollectionView.scrollsToTop = false
         messagesCollectionView.contentInsetAdjustmentBehavior = .always
@@ -201,38 +208,46 @@ extension ChatViewController {
 }
 
 extension ChatViewController: MessagesLayoutDelegate {
-
-    func avatarSize(
-        for message: MessageType,
-        at indexPath: IndexPath,
-        in messagesCollectionView: MessagesCollectionView
-    ) -> CGSize {
-        return isPreviousMessageSameSender(at: indexPath)
-            ? .zero
-            : CGSize(width: 28, height: 28)
-    }
-
-    func messagePadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
-        
-        return UIEdgeInsets(top: 1, left: 8, bottom: 1, right: 8)
-    }
     
+    func avatarSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        
+        return CGSize(width: 28, height: 28)
+    }
+        
     func messageTopLabelHeight(
         for message: MessageType,
         at indexPath: IndexPath,
         in messagesCollectionView: MessagesCollectionView
     ) -> CGFloat {
-
+        
+        // Your messages → no name
         if message.sender.senderId == currentUser.senderId {
             return 0
         }
-
-        if isPreviousMessageSameSender(at: indexPath) {
-            return 0
+        
+        // First message OR sender changed → show name
+        if indexPath.section == 0 || !isPreviousMessageSameSender(at: indexPath) {
+            return 16
         }
-
-        return 14
+        
+        return 0
     }
+    
+    func messageTopLabelInset(
+        for message: MessageType,
+        at indexPath: IndexPath,
+        in messagesCollectionView: MessagesCollectionView
+    ) -> UIEdgeInsets {
+        
+        if message.sender.senderId != currentUser.senderId,
+           (indexPath.section == 0 || !isPreviousMessageSameSender(at: indexPath)) {
+            
+            return UIEdgeInsets(top: 6, left: 12, bottom: 2, right: 12)
+        }
+        
+        return .zero
+    }
+    
 }
 
 extension ChatViewController: MessagesDisplayDelegate {
@@ -285,28 +300,28 @@ extension ChatViewController: MessagesDisplayDelegate {
         )
     }
 
-    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
-        // Your messages → no avatar
-            if message.sender.senderId == currentUser.senderId {
-                avatarView.isHidden = true
-                return
-            }
+    func configureAvatarView(
+        _ avatarView: AvatarView,
+        for message: MessageType,
+        at indexPath: IndexPath,
+        in messagesCollectionView: MessagesCollectionView
+    ) {
+        avatarView.isHidden = false
 
-            avatarView.isHidden = false
+        switch message.sender.senderId {
+        case "me":
+            avatarView.image = UIImage(named: "pfp_chirag")
+        case "ashika":
+            avatarView.image = UIImage(named: "pfp_ashika")
+        case "mithil":
+            avatarView.image = UIImage(named: "pfp_mithil")
+        case "ayaana":
+            avatarView.image = UIImage(named: "pfp_ayaana")
+        default:
+            avatarView.image = UIImage(systemName: "person.circle.fill")
+        }
 
-            switch message.sender.senderId {
-            case "ashika":
-                avatarView.image = UIImage(named: "pfp_ashika")
-            case "mithil":
-                avatarView.image = UIImage(named: "pfp_mithil")
-            case "ayaana":
-                avatarView.image = UIImage(named: "pfp_ayaana")
-            case "chirag":
-                avatarView.image = UIImage(named: "pfp_chirag")
-            default:
-                avatarView.image = UIImage(systemName: "person.circle.fill")
-            }
-        avatarView.layer.cornerRadius = avatarView.bounds.width / 2
+        avatarView.layer.cornerRadius = 14
         avatarView.clipsToBounds = true
     }
 }
@@ -348,6 +363,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         }
     }
 }
+
 extension ChatViewController: LeaveGroupDelegate {
     func didLeaveGroup(_ group: Group) {
         navigationController?.popToRootViewController(animated: true)

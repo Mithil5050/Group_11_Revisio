@@ -14,14 +14,17 @@ class GroupSettingsViewController: UIViewController {
     @IBOutlet weak var infoView: UIView!
     @IBOutlet weak var docsView: UIView!
 //    @IBOutlet weak var leaderboardView: UIView!
-//
+
+    @IBOutlet weak var groupImageView: UIImageView!
+    @IBOutlet weak var groupNameLabel: UILabel!
+    @IBOutlet weak var membersCountLabel: UILabel!
 //    // Info view outlets (inside infoView)
 //    @IBOutlet weak var membersCollectionView: UICollectionView!
-//    @IBOutlet weak var groupInfoTitleLabel: UILabel!
-//    @IBOutlet weak var membersCountLabel: UILabel!
+
+
 //    @IBOutlet weak var hideAlertsSwitch: UISwitch!
 //    @IBOutlet weak var leaveButton: UIButton!
-//
+
     // Docs view
     @IBOutlet weak var docsCollectionView: UICollectionView!
 //
@@ -32,7 +35,12 @@ class GroupSettingsViewController: UIViewController {
     var group: Group!
     weak var delegate: LeaveGroupDelegate?
 
-    //private let members: [(name: String, avatar: String)] = [("You", "pfp1"), ("Ashika", "pfp2"), ("Mithil", "pfp3"), ("Ayaana", "pfp4")]
+    private let members: [(name: String, avatar: String)] = [
+        ("You", "pfp_chirag"),
+        ("Ashika", "pfp_ashika"),
+        ("Mithil", "pfp_mithil"),
+        ("Ayaana", "pfp_ayaana")
+    ]
     
     private var documents: [String] = ["DBMS.pdf","Statistics.pdf","DS QB.jpg","DETT.pdf","Operating systems.jpg"]
     private var leaderboard: [(name: String, score: Int)] = [("Chirag",650),("Ashika",590),("Ayaana",400)]
@@ -42,26 +50,31 @@ class GroupSettingsViewController: UIViewController {
 
         segmentedControl.selectedSegmentIndex = 0
         showSegment(index: 0)
+        
+        // Header content
+        groupNameLabel.text = group?.name ?? "Group"
 
-        //groupInfoTitleLabel.text = group?.name ?? "Group"
-        //membersCountLabel.text = "\(members.count) members"
-
-        // style leave button
-        //leaveButton.layer.cornerRadius = 12
-        //leaveButton.setTitleColor(.systemRed, for: .normal)
-        //leaveButton.backgroundColor = UIColor.systemGray6
-
-        // register / datasource delegates
-//        membersCollectionView.dataSource = self
-//        membersCollectionView.delegate = self
-//        membersCollectionView.register(MemberCell.self, forCellWithReuseIdentifier: "MemberCellIdentifier")
+        membersCountLabel.text = "\(members.count) members"
+        
+        groupImageView.image = UIImage(systemName: "person.3.fill")
+        groupImageView.tintColor = .white
+        
+        // Navigation bar edit button
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Edit",
+            style: .plain,
+            target: self,
+            action: #selector(editGroupTapped)
+        )
 
         docsCollectionView.dataSource = self
         docsCollectionView.delegate = self
 
-        //leaderboardTableView.dataSource = self
-        //leaderboardTableView.delegate = self
-        //leaderboardTableView.register(UITableViewCell.self, forCellReuseIdentifier: "LeaderboardCellIdentifier")
+    }
+    
+    @objc private func editGroupTapped() {
+        print("Edit group tapped")
+        // Later: push EditGroup screen
     }
 
     // MARK: - Segment control
