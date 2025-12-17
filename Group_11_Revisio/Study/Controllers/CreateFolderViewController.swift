@@ -14,7 +14,7 @@ class CreateFolderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+       
     }
     
     @IBAction func cancelTapped(_ sender: UIBarButtonItem) {
@@ -23,16 +23,14 @@ class CreateFolderViewController: UIViewController {
     
     @IBAction func saveTapped(_ sender: UIBarButtonItem) {
         guard let newFolderName = folderNameTextField.text, !newFolderName.isEmpty else {
-                // Add UI feedback (e.g., alert or shake) for empty input
+               
                 print("Folder name cannot be empty.")
                 return
             }
 
-            // 1. Save Data: Create the new structure in the DataManager
-            // Ensure DataManager.createNewSubjectFolder is implemented as previously discussed
+            
             DataManager.shared.createNewSubjectFolder(name: newFolderName)
 
-            // 2. Dismiss the modal
             self.dismiss(animated: true, completion: nil)
     }
     /*

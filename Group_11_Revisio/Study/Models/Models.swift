@@ -18,7 +18,7 @@ struct QuestionResultDetail {
                 return "N/A"
             }
             
-            // Return just the first character as the option letter
+            
             return String(firstChar)
         }
 }

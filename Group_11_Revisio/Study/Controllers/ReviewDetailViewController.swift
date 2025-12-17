@@ -20,16 +20,16 @@ class ReviewDetailViewController: UIViewController,UITableViewDataSource, UITabl
         reviewTableView.dataSource = self
                 reviewTableView.delegate = self
                 
-                // Set the title for the screen
+               
                 title = "Review Summary"
                 
-                // Initially load the "All" segment data (segment 0)
+               
                 filterResults(for: segmentedControl.selectedSegmentIndex)
                 
-                // Ensure table view updates on load
+                
                 reviewTableView.reloadData()
 
-        // Do any additional setup after loading the view.
+        
     }
     
     
@@ -39,13 +39,13 @@ class ReviewDetailViewController: UIViewController,UITableViewDataSource, UITabl
     }
     func filterResults(for index: Int) {
             switch index {
-            case 0: // All (first segment)
+            case 0:
                 filteredQuestionDetails = allQuestionDetails
-            case 1: // Correct (second segment)
-                // Filter using the correct property: 'wasCorrect'
+            case 1:
+                
                 filteredQuestionDetails = allQuestionDetails.filter { $0.wasCorrect == true }
-            case 2: // Wrong (Incorrect) (third segment)
-                // Filter using the correct property: 'wasCorrect' == false
+            case 2:
+               
                 filteredQuestionDetails = allQuestionDetails.filter { $0.wasCorrect == false }
             default:
                 filteredQuestionDetails = allQuestionDetails
@@ -58,19 +58,19 @@ class ReviewDetailViewController: UIViewController,UITableViewDataSource, UITabl
             return filteredQuestionDetails.count
         }
         
-    // ReviewDetailViewController.swift
+    
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // IMPORTANT: Cast the cell to your custom class
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReviewCell", for: indexPath) as? ReviewQuestionCell else {
-            // Fallback
+           
             return UITableViewCell()
         }
         
         let detail = filteredQuestionDetails[indexPath.row]
         
-        // Use the custom configure method to set all content
+        
         cell.configure(with: detail, index: indexPath.row)
         
         return cell
@@ -78,17 +78,17 @@ class ReviewDetailViewController: UIViewController,UITableViewDataSource, UITabl
         
         // MARK: - UITableViewDelegate Methods
 
-        // Ensures cells can expand to show the full question text
+        
         func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             return UITableView.automaticDimension
         }
 
         func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-            // Provide a reasonable estimate for performance
+            
             return 80
         }
         
-        // Optional: Prevent selection in the review table
+        
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             tableView.deselectRow(at: indexPath, animated: true)
         }

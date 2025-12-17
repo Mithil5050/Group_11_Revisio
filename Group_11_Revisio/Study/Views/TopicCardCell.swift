@@ -21,7 +21,7 @@ class TopicCardCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
         cardContainerView.backgroundColor = .cardBackgroundColor
         cardContainerView.layer.cornerRadius = 8.0
         cardContainerView.clipsToBounds = true
@@ -30,7 +30,7 @@ class TopicCardCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
+        
     }
 
 }
