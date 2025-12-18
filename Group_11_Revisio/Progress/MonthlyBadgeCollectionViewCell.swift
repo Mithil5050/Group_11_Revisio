@@ -7,10 +7,10 @@
 
 import UIKit
 
-// This protocol defines the methods the parent View Controller must implement.
+
 protocol MonthlyBadgeCellDelegate: AnyObject {
     func didTapShowAllButton()
-    func didTapMonthlyBadgeCard() // Used for tapping the badge image/card area
+    func didTapMonthlyBadgeCard()
 }
 class MonthlyBadgeCollectionViewCell: UICollectionViewCell {
 
@@ -29,7 +29,7 @@ class MonthlyBadgeCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var showAllContainerView: UIView!
     
-    // The delegate property allows the cell to notify the AwardsViewController
+    
         weak var delegate: MonthlyBadgeCellDelegate?
         
         override func awakeFromNib() {
@@ -74,6 +74,7 @@ class MonthlyBadgeCollectionViewCell: UICollectionViewCell {
         }
         
         private func setupShowAllStyle() {
+            showAllContainerView.backgroundColor = .systemGray6
             showAllContainerView.layer.cornerRadius = 8
             showAllContainerView.layer.masksToBounds = true
         }
