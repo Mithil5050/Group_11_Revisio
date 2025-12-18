@@ -15,7 +15,6 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet var backButton: UIBarButtonItem!
     // Settings data structure (title, initial state/type)
     let settingsOptions: [(title: String, type: String)] = [
         ("Study Reminder", "Switch"),
