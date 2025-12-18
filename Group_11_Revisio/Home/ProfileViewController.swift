@@ -15,7 +15,6 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet var backButton: UIBarButtonItem!
     // Settings data structure (title, initial state/type)
     let settingsOptions: [(title: String, type: String)] = [
         ("Study Reminder", "Switch"),
@@ -35,7 +34,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         
         // ⬇️ NEW: Add Close Button for modal dismissal ⬇️
         let closeButton = UIBarButtonItem(
-            image: UIImage(systemName: "xmark.circle.fill"),
+            image: UIImage(systemName: "xmark"),
             style: .plain,
             target: self,
             action: #selector(closeTapped)
@@ -47,6 +46,10 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // ⬇️ NEW: Action method to dismiss the modal view controller ⬇️
     @objc func closeTapped() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func cancelTapped(_ sender: UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)
     }
     
