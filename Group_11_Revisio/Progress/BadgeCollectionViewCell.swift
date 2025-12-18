@@ -9,6 +9,8 @@ import UIKit
 
 class BadgeCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var badgeCardView: UIView!
+    
     @IBOutlet weak var badgeImageView: UIImageView!
     
     @IBOutlet weak var badgeTitleLabel: UILabel!
@@ -38,18 +40,16 @@ class BadgeCollectionViewCell: UICollectionViewCell {
             }
         }
         
-        // MARK: - Styling Method
-        
         private func setupCardStyle() {
             
             let radius: CGFloat = 12
             
-            // Apply Corner Radius and Background to the contentView
-            self.contentView.backgroundColor = .secondarySystemBackground
-            self.contentView.layer.cornerRadius = radius
-            self.contentView.layer.masksToBounds = true // Clip content to rounded background
             
-            // Apply Shadow to the outer cell layer (makes the card 'pop')
+           badgeCardView.backgroundColor = .systemGray6
+            badgeCardView.layer.cornerRadius = radius
+            badgeCardView.layer.masksToBounds = true
+            
+          
             self.layer.shadowColor = UIColor.black.cgColor
             self.layer.shadowOpacity = 0.1
             self.layer.shadowOffset = CGSize(width: 0, height: 1)
@@ -61,7 +61,7 @@ class BadgeCollectionViewCell: UICollectionViewCell {
         
         override func layoutSubviews() {
             super.layoutSubviews()
-            // Update the shadow path whenever the cell's size or layout changes
+           
             self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: 12).cgPath
         }
     }
